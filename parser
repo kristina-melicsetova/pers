@@ -1,26 +1,16 @@
 import requests
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup as BS
 
-URL = 'https://auto.ria.com/newauto/marka-jeep/'
-HEADERS = {'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 '
-                         'Safari/537.36', 'accept': '*/*'}
+page = 1
+while True:
+    r = requests.get("https://stopgame.ru/vreview/new/izumitelno"+ str(page))
+    html = BS(r.content, 'html.parser')
+    items = html.select(".items > .article-summary")
+    if len(items):
 
-
-def get_html(url, params=None):
-    r = requests.get(url, headers=HEADERS, params=params)
-    return r
-
-
-def get_contect(html):
-    soup = BeautifulSoup(html, 'html.parser')
-
-
-def parse():
-    html = get_html((URL))
-    if html.status_code == 200:
-        get_contect(html.text)
+        for el in items:
+            title = el.select('.caption > a')
+            print(title[0].text)
+        page+=1
     else:
-        print('Error')
-
-
-parse()
+        break
