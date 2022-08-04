@@ -15,3 +15,12 @@ while schetchik < len(a):
             num_letter -= 1
             save_num_letter.append(num_letter)
             num_letter = 0
+print(save_num_letter, ' количество всех букв')
+max_number = max(save_num_letter)
+print(max_number, "максимальное число")
+num_letter_under= 0
+for i in save_num_letter:
+    while i <= max_number:
+        if i < max_number:
+            num_letter_under += i+1
+print(num_letter_under, 'число букв перед словом')
