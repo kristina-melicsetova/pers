@@ -1,26 +1,20 @@
-a = input()
-schetchik = 0
-save_num_letter = []
-num_letter = 0
-b = len(a) - 1
-while schetchik < len(a):
-    for i in a:
+import requests
+from bs4 import BeautifulSoup
+from time import sleep
 
-        schetchik +=1
-        num_letter +=1
+headers = {"User-Agent":
+"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36"}
 
-        if schetchik == len(a):
-            save_num_letter.append(num_letter)
-        if i == ' ':
-            num_letter -= 1
-            save_num_letter.append(num_letter)
-            num_letter = 0
-print(save_num_letter, ' количество всех букв')
-max_number = max(save_num_letter)
-print(max_number, "максимальное число")
-num_letter_under= 0
-for i in save_num_letter:
-    while i <= max_number:
-        if i < max_number:
-            num_letter_under += i+1
-print(num_letter_under, 'число букв перед словом')
+for count in range(1,8):
+    sleep(3)
+
+    url = f"https://scrapingclub.com/exercise/list_basic/?page={count}"
+    response = requests.get(url, headers=headers)
+    soup = BeautifulSoup(response.text, "lxml")
+
+    data = soup.find_all("div", class_="col-lg-4 col-md-6 mb-4")
+
+    for i in data:
+
+        card_url ="https://scrapingclub.com" + i.find("a").get("href")
+        print(card_url)
