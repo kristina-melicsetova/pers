@@ -1,16 +1,17 @@
-import requests
-from bs4 import BeautifulSoup as BS
+a = input()
+schetchik = 0
+save_num_letter = []
+num_letter = 0
+b = len(a) - 1
+while schetchik < len(a):
+    for i in a:
 
-page = 1
-while True:
-    r = requests.get("https://stopgame.ru/vreview/new/izumitelno"+ str(page))
-    html = BS(r.content, 'html.parser')
-    items = html.select(".items > .article-summary")
-    if len(items):
+        schetchik +=1
+        num_letter +=1
 
-        for el in items:
-            title = el.select('.caption > a')
-            print(title[0].text)
-        page+=1
-    else:
-        break
+        if schetchik == len(a):
+            save_num_letter.append(num_letter)
+        if i == ' ':
+            num_letter -= 1
+            save_num_letter.append(num_letter)
+            num_letter = 0
