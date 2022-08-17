@@ -4,56 +4,43 @@ from bs4 import BeautifulSoup
 from csv import writer
 
 list_card_url = []
-price1_list = []
+price_list = []
 headers = {"User-Agent":
                "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36"}
 
 
-for count in range(1, 36):
+for count in range(1, 36):#проходим по всем страницам католога
     url = f'http://raychem-mufta.kz/shop/folder/mufta/p/{count}'
 
     response = requests.get(url, headers=headers)
 
     soup = BeautifulSoup(response.text, "lxml")
-    data = soup.find_all("div", class_="shop2-item-product-in")
-    for i in data:
+    card = soup.find_all("div", class_="shop2-item-product-in")# парсим карточку
+    for i in card:# парсим все нужные нам значения по карточке
         card_url = "http://raychem-mufta.kz" + i.find("a").get("href")
-        price1 = i.find("div", class_="price-current").text
-        price1_list.append(price1)
+        price = i.find("div", class_="price-current").text
+        price_list.append(price)
         opisanie = i.find("div", class_="product-anonce").text
         artikul = i.find("div", class_="row_body").text
         proizvoditel = i.find("div", class_="table_row vendor").text
         name = i.findNext("div", class_ ="product-name").text
         list_card_url.append(card_url)
-
-
-        print(price1)
-        print(opisanie)
-        print("артикул", artikul)
-        print("производитель", proizvoditel)
-
-        def parse(url):
+        def parse(url):# парсим остальные нужные значения через lxml
             api = requests.get(url)
             tree = lxml.html.document_fromstring(api.text)
             sechenie = tree.xpath('/html/body/div[1]/div[2]/div[3]/main/div/form/div[2]/div[4]/div/div[8]/div[2]/text()')
-            print("сечение = ", sechenie)
             tip_mufti = tree.xpath('/html/body/div[1]/div[2]/div[3]/main/div/form/div[2]/div[4]/div/div[3]/div[2]/text()')
-            print("тип муфты", tip_mufti)
             marka = tree.xpath('/html/body/div[1]/div[2]/div[3]/main/div/form/div[2]/div[4]/div/div[4]/div[2]/text()')
-            print("марка", marka)
             naprigenie  = tree.xpath('/html/body/div[1]/div[2]/div[3]/main/div/form/div[2]/div[4]/div/div[5]/div[2]/text()')
-            print("наприжение =",naprigenie)
             tip_izolicii = tree.xpath('/html/body/div[1]/div[2]/div[3]/main/div/form/div[2]/div[4]/div/div[6]/div[2]/text()')
-            print("тип изоляции",tip_izolicii)
             kolvo_gil = tree.xpath('/html/body/div[1]/div[2]/div[3]/main/div/form/div[2]/div[4]/div/div[7]/div[2]/text()')
-            print("количество жил",kolvo_gil)
-            print("\n\n\n\n\n\n\n")
-            myData = [name, price1, opisanie, proizvoditel, sechenie, tip_mufti, tip_izolicii,marka,naprigenie,kolvo_gil]
-            with open('CSVFILE.csv', 'a', newline='') as f_object:
+
+            myData = [name, price, opisanie, proizvoditel, sechenie, tip_mufti, tip_izolicii,marka,naprigenie,kolvo_gil] # прописываем все значения, которые хотим сохранить в файл
+            with open('material.csv', 'a', newline='') as f_object:#создаем файл
 
                 writer_object = writer(f_object)
 
-                writer_object.writerow(myData)
+                writer_object.writerow(myData)#передаем в него нужные нам файлы
                 f_object.close()
 
 
